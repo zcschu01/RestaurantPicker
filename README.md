@@ -1,6 +1,10 @@
 # RestaurantPicker
 C# WPF Application that will pick a random restaurant for you
 
+## Dependencies
+- [Newtonsoft.Json](https://www.newtonsoft.com/json)
+- [Python](https://www.python.org/downloads/)
+
 ### Application Changes
 Within the MainWindow.xaml.cs file you will need to change two methods:
 1. **Gen_Button_Click**
