@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,7 +24,7 @@ namespace Random_Restaurant
 
         private void Gen_Button_Click(object sender, RoutedEventArgs e)
         {
-            string script = @"Y:\Documents\Projects\Python\RestaurantPicker\Restaurant_Picker.py";
+            string script = "Restaurant_Picker.py";
             run_cmd(script);
             DeSerialize();
         }
@@ -77,7 +78,10 @@ namespace Random_Restaurant
             Cuisine_Label.Content = $"{string.Join(", ", chosen_restaurants[randInt].Cuisine)}";
             Address_Label.Content = $"{chosen_restaurants[randInt].Address}";
             Website_Label.Text = $"{chosen_restaurants[randInt].Website}";
-            Website_Uri.NavigateUri = new Uri(chosen_restaurants[randInt].Website);
+            if(chosen_restaurants[randInt].Website != null)
+                Website_Uri.NavigateUri = new Uri(chosen_restaurants[randInt].Website);
+            else
+                Website_Uri.NavigateUri = new Uri("https://www.google.com/search?q=" + chosen_restaurants[randInt].Name);
         }
 
         private void Surprise_Button_Click(object sender, RoutedEventArgs e)
@@ -95,7 +99,10 @@ namespace Random_Restaurant
             Cuisine_Label.Content = $"{string.Join(", ", restaurant_list[randInt].Cuisine)}";
             Address_Label.Content = $"{restaurant_list[randInt].Address}";
             Website_Label.Text = $"{restaurant_list[randInt].Website}";
-            Website_Uri.NavigateUri = new Uri(restaurant_list[randInt].Website);
+            if(restaurant_list[randInt].Website != null)
+                Website_Uri.NavigateUri = new Uri(restaurant_list[randInt].Website);
+            else
+                Website_Uri.NavigateUri = new Uri("https://google.com/" + restaurant_list[randInt].Name);
         }
 
         private void RequestToNavigate(object sender, RequestNavigateEventArgs e)
@@ -138,8 +145,28 @@ namespace Random_Restaurant
             try
             {
                 Error_Label.Text = "Starting Python script...\n";
+                string PYTHON_PATH = "";
+                try
+                {
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\Python\\PythonCore\\3.8-32\\InstallPath"))
+                    {
+                        if (key != null)
+                        {
+                            Object o = key.GetValue("ExecutablePath");
+                            if (o != null)
+                            {
+                                PYTHON_PATH = o.ToString();
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Error_Label.Text = e.Message;
+                }
+
                 Process p = new Process();
-                p.StartInfo = new ProcessStartInfo(@"Y:\Python\python.exe", args)
+                p.StartInfo = new ProcessStartInfo(PYTHON_PATH, args)
                 {
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
