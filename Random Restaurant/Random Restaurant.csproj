@@ -106,5 +106,10 @@
   <ItemGroup>
     <Resource Include="panda.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Restaurant_Picker.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
